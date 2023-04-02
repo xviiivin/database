@@ -1,6 +1,5 @@
 <template >
     <div>
-
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div class="pb-4 bg-white ">
                 <label for="table-search" class="sr-only">Search</label>
@@ -12,7 +11,7 @@
                                 clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <input type="text" id="table-search"
+                    <input type="text" id="table-search" v-model="input"
                         class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-black focus:border-black "
                         placeholder="Search for items">
                 </div>
@@ -23,43 +22,44 @@
                         <th scope="col" class="p-4">
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Product name
+                            id
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Color
+                            Idcard
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Category
+                            name
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Price
+                            Phone number
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Action
+                            Role
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b  hover:bg-gray-50 ">
+                    <!-- v-for="(value, index) in data" :key="index" -->
+                    <tr v-for="(value, index) in filteredUsers" :key="index" class="bg-white border-b  hover:bg-gray-50 ">
                         <td class="w-4 p-4">
                             <div class="flex items-center">
 
                             </div>
                         </td>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                            Apple MacBook Pro 17"
+                            {{ index + 1 }}
                         </th>
                         <td class="px-6 py-4">
-                            Silver
+                            {{ value.idCard }}
                         </td>
                         <td class="px-6 py-4">
-                            Laptop
+                            {{ value.name }}
                         </td>
                         <td class="px-6 py-4">
-                            $2999
+                            {{ value.phone }}
                         </td>
                         <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            {{ value.role }}
                         </td>
                     </tr>
                 </tbody>
@@ -69,7 +69,35 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
+    data() {
+        return {
+            data: [],
+            filteredUsers: [],
+            input: ''
+        }
+    },
+
+    mounted() {
+        this.load()
+    },
+
+    methods: {
+        async load() {
+            const result = await axios.get("http://localhost:8080/api/user");
+            this.data = result.data
+            this.filteredUsers = result.data
+        },
+
+    },
+    computed: {
+        filteredUsers() {
+            return this.data.filter(user => user.name.toLowerCase().includes(this.input.toLowerCase())
+                || user.idCard.toLowerCase().includes(this.input.toLowerCase())
+                || user.phone.toLowerCase().includes(this.input.toLowerCase()))
+        }
+    }
 
 }
 </script>
