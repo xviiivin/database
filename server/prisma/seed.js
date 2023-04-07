@@ -1,72 +1,170 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import  bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
+import { faker } from "@faker-js/faker";
+// import medicine from "./medicine.js";
+
+const medicine = [
+  {
+    name: "Ampelacine",
+    price: 12.99,
+  },
+  {
+    name: "Cardiomax",
+    price: 9.49,
+  },
+  {
+    name: "Dermacton",
+    price: 7.99,
+  },
+  {
+    name: "Enerzest",
+    price: 15.99,
+  },
+  {
+    name: "Flexalite",
+    price: 11.49,
+  },
+  {
+    name: "Gastroflux",
+    price: 8.99,
+  },
+  {
+    name: "Hepatovit",
+    price: 14.49,
+  },
+  {
+    name: "Immunovax",
+    price: 10.99,
+  },
+  {
+    name: "Neurolynx",
+    price: 18.99,
+  },
+];
+
+const hospital = [
+  { name: "Bangkok Hospital" },
+  { name: "Siriraj Hospital" },
+  { name: "Chulalongkorn Hospital" },
+  { name: "Bumrungrad International Hospital" },
+  { name: "Ramathibodi Hospital" },
+  { name: "Vibhavadi Hospital" },
+  { name: "Phyathai 2 Hospital" },
+  { name: "Samitivej Hospital" },
+  { name: "Bangkok Christian Hospital" },
+  { name: "Rajavithi Hospital" },
+];
+
+const doctor = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+const user = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
 
 async function main() {
-  for (let i = 0; i < 10; i++) {
+  medicine.map(async (item) => {
     await prisma.medicine.upsert({
       where: {
-        name: `medicine${i}`,
+        name: item.name,
       },
       update: {
-        name: `medicine${i}`,
-        price: i * 100,
+        name: item.name,
+        price: item.price,
       },
       create: {
-        name: `medicine${i}`,
-        price: i * 100,
+        name: item.name,
+        price: item.price,
       },
     });
-  }
-
-  await prisma.user.upsert({
-    where: {
-      phone: "0892452669",
-    },
-    update: {
-      phone: "0892452669",
-      password: bcrypt.hashSync("3114", 10),
-      idCard: "1234567890123",
-      name: "pateint",
-    },
-    create: {
-      phone: "0892452669",
-      password: bcrypt.hashSync("3114", 10),
-      idCard: "1234567890123",
-      name: "pateint",
-    },
   });
 
   await prisma.user.upsert({
     where: {
-      phone: "0892332669",
+      idCard: "1234567890124",
     },
     update: {
-      phone: "0892332669",
-      password: bcrypt.hashSync("3114", 10),
-      idCard: "1234567890333",
-      name: "doctor",
-      role: "DOCTOR",
+      phone: "0892452369",
+      password: bcrypt.hashSync("password", 10),
+      idCard: "1234567890124",
+      name: "admin",
+      role: "ADMIN",
     },
     create: {
-      phone: "0892332669",
-      password: bcrypt.hashSync("3114", 10),
-      idCard: "1234567890333",
-      name: "doctor",
-      role: "DOCTOR",
+      phone: "0892452369",
+      password: bcrypt.hashSync("password", 10),
+      idCard: "1234567890124",
+      name: "admin",
+      role: "ADMIN",
     },
   });
 
-  await prisma.hospital.upsert({
-    where: {
-      name: "โรงพยาบาลเชียงใหม่",
-    },
-    update: {
-      name: "โรงพยาบาลเชียงใหม่",
-    },
-    create: {
-      name: "โรงพยาบาลเชียงใหม่",
-    },
+  doctor.map(async (doctor) => {
+    const idCard = faker.datatype.number(10000000000000).toString();
+    const phone = faker.phone.number("501######");
+    await prisma.user.upsert({
+      where: {
+        idCard: idCard,
+      },
+      update: {
+        phone: phone,
+        password: bcrypt.hashSync("password", 10),
+        idCard: idCard,
+        name: "doctor",
+        role: "DOCTOR",
+      },
+      create: {
+        phone: phone,
+        password: bcrypt.hashSync("password", 10),
+        idCard: idCard,
+        name: "doctor",
+        role: "DOCTOR",
+      },
+    });
+  });
+
+  hospital.map(async (hospital) => {
+    await prisma.hospital.upsert({
+      where: {
+        name: hospital.name,
+      },
+      update: {
+        name: hospital.name,
+      },
+      create: {
+        name: hospital.name,
+      },
+    });
+  });
+
+  user.map(async (user) => {
+    const idCard = (faker.datatype.number(10000000000000)).toString();
+    const phone = faker.phone.number("501######");
+    const userData = await prisma.user.upsert({
+      where: {
+        idCard: idCard,
+      },
+      update: {
+        phone: phone,
+        idCard: idCard,
+        name: "pateint",
+        password: bcrypt.hashSync("password", 10),
+      },
+      create: {
+        phone: phone,
+        idCard: idCard,
+        name: "pateint",
+        password: bcrypt.hashSync("password", 10),
+      },
+    });
+    await prisma.userInfo.upsert({
+      where: {
+        userId: userData.id,
+      },
+      update: {
+        userId: userData.id,
+      },
+      create: {
+        userId: userData.id,
+      },
+    });
   });
 }
 

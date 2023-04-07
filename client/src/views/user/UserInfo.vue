@@ -2,149 +2,147 @@
   <AppLayout>
     <Nav />
     <div class="bg-[#111727]">
-      <div class="h-24 p-4 container mx-auto">
+      <div class="p-4 container mx-auto">
         <router-link style="cursor: pointer; text-decoration: none" to="/">
-          <img
-            src="../../assets/back 1@2x.png"
-            alt=""
-            class="w-8 cursor-pointer"
-          />
+          <img src="../../assets/back 1@2x.png" alt="" class="w-8 cursor-pointer" />
         </router-link>
       </div>
     </div>
-    <div
-      class="w-full h-full flex flex-col items-center flex-grow bg-[#111727]"
-    >
+    <div class="w-full h-full flex flex-col items-center flex-grow bg-[#111727]">
       <!-- body -->
-      <div
-        class="relative h-full w-full md:w-2/3 xl:w-1/3 flex items-center rounded-t-3xl bg-white" >
-        <div class="w-full h-full p-6 m-5 ">
-          <div class="w-full h-full space-y-10" v-for="(val, index) in userInfo" :key="index">
-            <div class="flex justify-center">
-              <div v-if="!image">
-                <input type="file" name="" id="" lass="w-[250px] h-[250px] block" @change="onFileChange">
-              </div>
-              <div v-else >
-                <div class="rounded-lg w-[250px] h-[250px]">
-                  <img :src="image" class="w-[250px] h-[250px] block object-cover">
-                </div>
-                  
-              </div>
+      <div class="flex flex-col w-full bg-white flex-grow rounded-t-3xl p-5 items-center">
+        <!-- image input -->
 
+        <Image />
 
-              <!-- <div class="h-[calc(100%+2rem)] w-[calc(100%-1rem)] rounded-xl  overflow-hidden cursor-pointer bg-[#111727]">
-                    <img class="h-full w-full" :src="val.image"
-                    />
-                  </div> -->
-            </div>
-            <div class="text-black font-semibold text-md mt-5 space-y-10">
-              <Info />
-            </div>
-
-            <div class="space-x-5 text-white flex justify-end">
-              <button class="rounded-lg bg-slate-800 p-2 px-5">Save</button>
-              <button class="rounded-lg p-2 bg-rose-900">Cancel</button>
-            </div>
-            <!-- </div> -->
+        <div class="flex flex-col item-center mb-6">
+          <table class="w-full justify-center">
+            <tbody class="w-full flex flex-col xl:w-1/3 xl:mx-auto xl:justify-center gap-y-3">
+              <tr class="flex justify-between items-center gap-x-2">
+                <td>Name</td>
+                <td><input type="text" class="rounded-md py-1" :value="userInfo?.name" @input="userInfo.name = $event.target.value" /></td>
+              </tr>
+              <tr class="flex justify-between items-center gap-x-2">
+                <td>Age</td>
+                <td>
+                  <input
+                    type="number"
+                    class="rounded-md py-1"
+                    :value="userInfo?.userInfo?.age || ''"
+                    @input="userInfo.userInfo.age = $event.target.value"
+                  />
+                </td>
+              </tr>
+              <tr class="flex justify-between items-center gap-x-2">
+                <td>Gender</td>
+                <td>
+                  <select
+                    :value="userInfo?.userInfo?.sex"
+                    @input="
+                      (event) => {
+                        if (userInfo && userInfo.userInfo) {
+                          userInfo.userInfo.sex = event.target.value;
+                        }
+                      }
+                    "
+                    class="w-full text-sm text-black bg-white border-0 border-b-2 focus:outline-none focus:ring-0 focus:border-black"
+                  >
+                    <option value="" disabled>Choose your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                  </select>
+                </td>
+              </tr>
+              <tr class="flex justify-between items-center gap-x-2">
+                <td>Weight</td>
+                <td>
+                  <input
+                    type="number"
+                    class="rounded-md py-1"
+                    @input="userInfo.userInfo.weight = $event.target.value"
+                    :value="userInfo?.userInfo?.weight"
+                  />
+                </td>
+              </tr>
+              <tr class="flex justify-between items-center gap-x-2">
+                <td>Height</td>
+                <td>
+                  <input
+                    type="number"
+                    class="rounded-md py-1"
+                    @input="userInfo.userInfo.height = $event.target.value"
+                    :value="userInfo?.userInfo?.height"
+                  />
+                </td>
+              </tr>
+              <tr class="flex justify-between items-center gap-x-2">
+                <td>Blood type</td>
+                <td>
+                  <input
+                    type="text"
+                    class="rounded-md py-1"
+                    @input="userInfo.userInfo.bloodType = $event.target.value"
+                    :value="userInfo?.userInfo?.bloodType"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- button group -->
+        <div class="w-full flex flex-col xl:w-1/3 xl:mx-auto xl:justify-center">
+          <div class="space-x-5 text-white flex justify-end">
+            <button @click="saveUserInfo()" class="rounded-lg bg-slate-900 p-2 px-5">Save</button>
           </div>
         </div>
       </div>
     </div>
   </AppLayout>
 </template>
-      
+
 <script>
 import AppLayout from "../../components/AppLayout.vue";
 import Nav from "../../components/users/MainNav.vue";
-import pic2 from "../../assets/doctorPic1.png";
-import Info from "../../components/Addinfo.vue";
-
+import Image from "../../components/AddImage.vue";
+import axios from "axios";
 export default {
   components: {
     AppLayout,
     Nav,
-    Info,
+    Image,
   },
   data: () => ({
-    image: null,
-    userInfo: [
-      {
-        userId: "1234",
-        name: "wiranyupa petch-in",
-        age: "19",
-        sex: "female",
-        weight: "40",
-        height: "162",
-        bloodType: "b",
-        nationality: "thai",
-        occupation: "student",
-        address: "888/88 chonburi, Thailand",
-        religion: "Buddhist",
-        userImage: "",
-        image: pic2,
-      }
-    ]
-  }) ,
-
-
-//  methods: {
-//       selectImage () {
-//           this.$refs.fileInput.click()
-//       },
-//       pickFile () {
-//         let input = this.$refs.fileInput
-//         let file = input.files
-//         if (file && file[0]) {
-//           let reader = new FileReader
-//           reader.onload = e => {
-//             this.image = e.target.result
-//           }
-//           reader.readAsDataURL(file[0])
-//           this.$emit('input', file[0])
-//         }
-//       }
-//   }
-
-
+    left: ["Name", "Age", "Genders", "Weight", "Height"],
+    userInfo: {},
+  }),
+  mounted() {
+    this.getUserInfo();
+  },
   methods: {
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) {
-        return;
-      }
-      this.createImage(files[0]);
-      console.log("เลือกไฟล์แล้ว");
+    async getUserInfo() {
+      const userId = JSON.parse(localStorage.getItem("user")).idCard;
+      const res = await axios.get(`http://localhost:8080/api/user/${userId}`);
+      console.log(res.data);
+      this.userInfo = res.data;
     },
-
-    createImage(file) {
-      var image = new Image();
-      var reader = new FileReader();
-      var vm = this;
-      reader.onload = (e) => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
-
-    selectImage() {
-      this.$refs.fileInput.click();
-    },
-
-    pickFile() {
-      let input = this.$refs.fileInput;
-      let file = input.files;
-      if (file && file[0]) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          this.image = e.target.result;
-        };
-        reader.readAsDataURL(file[0]);
-        this.$emit("input", file[0]);
+    async saveUserInfo() {
+      try {
+        const usrId = JSON.parse(localStorage.getItem("user")).idCard;
+        this.userInfo.userInfo.age = parseInt(this.userInfo.userInfo.age);
+        this.userInfo.userInfo.weight = parseFloat(this.userInfo.userInfo.weight);
+        this.userInfo.userInfo.height = parseFloat(this.userInfo.userInfo.height);
+        await axios.patch(`http://localhost:8080/api/user/${usrId}/info`, this.userInfo.userInfo);
+        delete this.userInfo.userInfo;
+        await axios.patch(`http://localhost:8080/api/user/${usrId}`, this.userInfo);
+        this.getUserInfo();
+        this.$swal.fire("You info has been saved!", "You clicked the button!", "success");
+      } catch (error) {
+        console.log(error);
       }
     },
   },
 };
 </script>
-      
+
 <style></style>
-      

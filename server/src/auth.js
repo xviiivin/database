@@ -19,9 +19,7 @@ router.post("/login", async (req, res) => {
       if (await bcrypt.compare(req.body.password, user.password)) {
         user.password = undefined;
         // เพิ่ม
-        const accessToken = jwt.sign({ sub: user.id }, "mySecretKey");
-        res.json(accessToken, user.id, user);
-        // จบ
+        // const accessToken = jwt.sign({ sub: user.id }, "mySecretKey");
         res.json(user);
       } else {
         res.status(401).json({ message: "Wrong password" });
@@ -68,9 +66,9 @@ router.post("/register", async (req, res) => {
     });
 
     if (checkidcard) {
-      res.json({ status: "errorid", message: "accounterror" });
+      res.status(500).json({ status: "errorid", message: "accounterror" });
     } else if (checkphone) {
-      res.json({ status: "errorphone", message: "phoneerror" });
+      res.status(500).json({ status: "errorphone", message: "phoneerror" });
     } else {
       const user = await prisma.user.create({
         data: {
@@ -80,20 +78,16 @@ router.post("/register", async (req, res) => {
           idCard: req.body.idCard,
         },
       });
+      await prisma.userInfo.create({
+        data: {
+          userId: user.id,
+        },
+      });
       user.password = undefined;
       res.json(user);
     }
   } catch (error) {
-    console.log(error);
     exeptionError(error, res);
   }
 });
-// export async function getAllData() {
-//   const allData = await prisma.User.findMany();
-//   return allData;
-// }
-
-// module.exports = {
-//   router,
-// };
 export default router;

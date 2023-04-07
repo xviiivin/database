@@ -1,20 +1,14 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import home from "../views/user/Mainpage.vue";
 const routes = [
   {
     path: "/",
     name: "home",
-    component: home,
+    component: () => import("../views/user/Mainpage.vue"),
   },
   {
-    path: "/docmain",
+    path: "/doctor/",
     name: "doc",
     component: () => import("../views/doctor/Mainpage.vue"),
-  },
-  {
-    path: "/usermain",
-    name: "user",
-    component: () => import("../views/user/Mainpage.vue"),
   },
   {
     path: "/login",
@@ -27,48 +21,48 @@ const routes = [
     component: () => import("../views/Register.vue"),
   },
   {
-    path: "/payment1",
-    name: "payment1",
+    path: "/pending",
+    name: "pending",
     component: () => import("../views/user/Payment1.vue"),
   },
   {
-    path: "/payment2",
-    name: "payment2",
+    path: "/payment",
+    name: "payment",
     component: () => import("../views/user/Payment2.vue"),
   },
   {
-    path: "/docinfo",
+    path: "/doctor/info",
     name: "docinfo",
     component: () => import("../views/doctor/Docinfo.vue"),
   },
   {
-    path: "/alldoctor",
+    path: "/alldoctor/:id",
     name: "alldoctor",
     component: () => import("../views/user/AllDoctor.vue"),
   },
   {
-    path: "/docinfo1",
+    path: "/user/doctor",
     name: "docinfo1",
     component: () => import("../views/user/DocInfo1.vue"),
   },
   {
-    path: "/hospitalrecord",
+    path: "/user/hospital",
     name: "hospitalrecord",
     component: () => import("../views/user/HospitalRecord.vue"),
   },
   {
-    path: "/userinfo",
+    path: "/user/info",
     name: "userinfo",
     component: () => import("../views/user/UserInfo.vue"),
   },
 
   {
-    path: "/adminrole",
+    path: "/admin/role",
     name: "admin",
     component: () => import("../views/admin/Addrole.vue"),
   },
   {
-    path: "/alluser",
+    path: "/admin/users",
     name: "alluser",
     component: () => import("../views/admin/Alluser.vue"),
   },

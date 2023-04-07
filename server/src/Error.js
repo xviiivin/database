@@ -6,8 +6,7 @@ function exeptionError(err, res) {
       return res.status(409).send("data already in use");
     }
   } else {
-    console.log(err);
-    return res.status(500).send("Something broke!");
+    return res.status(500).json(err);
   }
 }
 
