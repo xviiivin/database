@@ -47,7 +47,7 @@ export default {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
         didOpen: (toast) => {
           toast.addEventListener("mouseenter", this.$swal.stopTimer);
@@ -70,32 +70,34 @@ export default {
           idCard: this.idcard,
           password: this.password,
         });
+        const user = res.data.user;
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", res.data.accessToken);
 
-        localStorage.setItem("user", JSON.stringify(res.data));
-
-        if (res.data.role == "ADMIN") {
-          this.$router.push("/admin");
-        } else if (res.data.role == "DOCTOR") {
+        if (user.role == "ADMIN") {
+          this.$router.push("/admin/users");
+        } else if (user.role == "DOCTOR") {
           this.$router.push("/doctor/");
-        } else if (res.data.role == "USER") {
+        } else if (user.role == "USER") {
           this.$router.push("/");
         }
         await this.showAlert();
       } catch (error) {
+        console.log(error);
         if (error.message === "Please fill in all fields") {
           this.$swal.fire({
             icon: "error",
-            text: "โปรดกรอกข้อมูลให้ครบถ้วน",
+            text: "plase type all!",
           });
         } else if (error?.response?.data?.message === "Wrong password") {
           this.$swal.fire({
             icon: "error",
-            text: "รหัสผ่านผิดพลาด",
+            text: "Wrong password!",
           });
         } else if (error?.response?.data?.message === "User not found") {
           this.$swal.fire({
             icon: "error",
-            text: "คุณยังไม่ได้ทำการสมัครโปรดลองอีกครั้ง",
+            text: "User not found!",
           });
         }
       }
