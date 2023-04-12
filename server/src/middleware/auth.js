@@ -20,6 +20,9 @@ const adminAuthorize = async (req, res, next) => {
   }
 };
 
+// พี่ มัน http://localhost:8080/api/user เเล้วก็เห็น info เหมือนเดิมอะ
+// ก็ไม่ได้เอา function นี้มาใช้
+
 const doctorAuthorize = async (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
